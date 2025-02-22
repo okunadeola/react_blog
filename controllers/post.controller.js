@@ -35,7 +35,7 @@ export const create = async (req, res, next) => {
     .replace(/[^a-zA-Z0-9-]/g, '');
   const newPost = new Post({
     ...req.body,
-    image:req.body.image.url,
+    image:req.body?.image?.url,
     slug,
     userId: req.user.id,
   });
