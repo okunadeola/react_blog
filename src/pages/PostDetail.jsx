@@ -8,8 +8,9 @@ import { Link, useParams } from "react-router-dom";
 import CommentSection from "../components/CommentSection";
 import { ChevronLeft } from "lucide-react";
 import moment from "moment";
+import ListBlock from "../components/ListBlock";
 
-export default function PostPage() {
+export default function PostDetail() {
   const { postSlug } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -125,15 +126,17 @@ export default function PostPage() {
         case "list":
           const ListTag = block.data.style === "ordered" ? "ol" : "ul";
           return (
-            <ListTag key={index} className={`${ListTag === "ol" ? 'list-decimal' : 'list-disc'} ml-6 mb-4`}>
-              {block.data.items.map((item, i) => (
-                <li key={i}>
-                  {typeof item === "string"
-                    ? item
-                    : renderContent(item.content)}
-                </li>
-              ))}
-            </ListTag>
+
+            <ListBlock block={block}/>
+            // <ListTag key={index} className={`${ListTag === "ol" ? 'list-decimal' : 'list-disc'} ml-6 mb-4`}>
+            //   {block.data.items.map((item, i) => (
+            //     <li key={i}>
+            //       {typeof item === "string"
+            //         ? item
+            //         : renderContent(item.content)}
+            //     </li>
+            //   ))}
+            // </ListTag>
           );
 
         case "quote":
@@ -276,11 +279,11 @@ export default function PostPage() {
       <CommentSection postId={post._id} />
 
       {/* Related Posts */}
-      <section className="max-w-4xl mx-auto mt-16">
+      <section className="md:max-w-4xl mx-auto mt-16">
         <h2 className="text-2xl font-bold mb-8">Related Articles</h2>
         <div className="grid md:grid-cols-2 gap-8">
           {recentPosts?.map((relatedPost, index) => (
-            <div key={index} className="group cursor-pointer">
+            <div key={index} className="group cursor-pointer max-w-[400px]">
               <div className="relative overflow-hidden rounded-xl mb-4">
                 <img
                   src={relatedPost.image}
@@ -288,7 +291,7 @@ export default function PostPage() {
                   className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
-              <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-500 transition-colors">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-500 transition-colors line-clamp-2">
                 {relatedPost.title}
               </h3>
               <p className="text-gray-600 mb-2">{relatedPost.excerpt}</p>

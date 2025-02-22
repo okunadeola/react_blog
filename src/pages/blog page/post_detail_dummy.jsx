@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Calendar, Clock, Heart, MessageCircle, Bookmark, Facebook, Twitter, Linkedin , Copy, ChevronLeft, ChevronRight } from 'lucide-react';
 
-const BlogPostDetail = () => {
+const BlogPostDetailDummy = () => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [likes, setLikes] = useState(128);
   const [hasLiked, setHasLiked] = useState(false);
@@ -311,4 +311,4 @@ const BlogPostDetail = () => {
   );
 };
 
-export default BlogPostDetail;
+export default BlogPostDetailDummy;

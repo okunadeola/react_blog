@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { FaThumbsUp } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Button, Textarea } from 'flowbite-react';
+import toast from 'react-hot-toast';
 
 
 export default function Comment({ comment, onLike, onEdit, onDelete }) {
@@ -45,9 +46,11 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
       if (res.ok) {
         setIsEditing(false);
         onEdit(comment, editedContent);
+        toast.success(`comment update success`)
       }
     } catch (error) {
       console.log(error.message);
+      toast.error(`comment update falied, ${error.message}`)
     }
   };
   return (

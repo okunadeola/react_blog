@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import BlogHomepage2 from './blog page/home2';
+import BlogHomepage2 from './blog page/home';
 import toast from 'react-hot-toast';
 
 export default function Home() {

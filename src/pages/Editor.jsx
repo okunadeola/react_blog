@@ -15,9 +15,10 @@ import CodeTool from '@editorjs/code';
 import Embed from '@editorjs/embed';
 import Table from '@editorjs/table';
 import RelatedPostTool from '../components/tools/RelatedPostTool';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
+import ListBlock from '../components/ListBlock';
 
 const BlogEditor = () => {
   const ejInstance = useRef();
@@ -35,16 +36,28 @@ const BlogEditor = () => {
   const [inputTag, setInputTag] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { postId } = useParams();
   const { currentUser } = useSelector((state) => state.user);
-
-
-
+  const [ postId, setPostId ] = useState(null);
+  
+  
+  
   useEffect(() => {
     try {
+      const urlParams = new URLSearchParams(location.search);
+      const actiomFromUrl = urlParams.get('action');
+      setPostId(actiomFromUrl)
+
       const fetchPost = async () => {
-        const res = await fetch(`/api/post/getposts?postId=${postId}`);
+        const res = await fetch(`/api/post/getposts?postId=${actiomFromUrl}`);
         const data = await res.json();
+
+        const res2 = await fetch('/api/featured/get');
+        const data2 = await res2.json();
+        
+        const init = data.posts?.find(el => el._id === data2.postId)
+
+        const isFeatured = !!init
+
         if (!res.ok) {
           toast.error(data.message)
           return;
@@ -55,14 +68,14 @@ const BlogEditor = () => {
           setTitle(res?.title)
           setSubTitle(res?.subtitle)
           setFeaturedImage({url: res?.image})
-          setFeatured(res?.featured)
+          setFeatured(isFeatured)
           setInputCategory(res?.category)
           setTags(res?.tags?.split(','))
           setStatus(res?.status)
         }
       };
       
-      if(postId){
+      if(actiomFromUrl != "0"){
         fetchPost();
       }
     } catch (error) {
@@ -184,10 +197,10 @@ const BlogEditor = () => {
   const uploadToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', '...'); // Replace with your Cloudinary upload preset
+    formData.append('upload_preset', 'grfua8vf'); // Replace with your Cloudinary upload preset
 
     const response = await fetch(
-      `https://api.cloudinary.com/v1_1/.../image/upload`, // Replace with your Cloudinary cloud name
+      `https://api.cloudinary.com/v1_1/dv1cetenk/image/upload`, // Replace with your Cloudinary cloud name
       {
         method: 'POST',
         body: formData
@@ -251,8 +264,9 @@ const BlogEditor = () => {
     if(loading)return 
     setLoading(true)
     try {
-      const res = await fetch( !postId ? '/api/post/create' : `/api/post/updatepost/${postId}/${currentUser._id}`, {
-        method: !postId ? 'POST' : 'PUT',
+      const isCreate = postId === "0"
+      const res = await fetch( isCreate ? '/api/post/create' : `/api/post/updatepost/${postId}/${currentUser._id}`, {
+        method: isCreate ? 'POST' : 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -345,14 +359,15 @@ const recentBlogs = [
               case 'list':
                 const ListTag = block.data.style === 'ordered' ? 'ol' : 'ul';
                 return (
-                  <ListTag key={index} className="list-decimal ml-6 mb-4">
-                    {block.data.items.map((item, i) => (
-                      <li key={i}>
-                        {typeof item === 'string' ? item : renderContent(item.content)}
-                      </li>
+                  <ListBlock block={block}/>
+                  // <ListTag key={index} className="list-decimal ml-6 mb-4">
+                  //   {block.data.items.map((item, i) => (
+                  //     <li key={i}>
+                  //       {typeof item === 'string' ? item : renderContent(item.content)}
+                  //     </li>
                      
-                    ))}
-                  </ListTag>
+                  //   ))}
+                  // </ListTag>
                 );
       
               case 'quote':
@@ -423,11 +438,11 @@ const recentBlogs = [
             className="fixed top-0 right-0 w-1/2 h-full bg-white shadow-2xl overflow-y-auto z-50"
           >
             <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">{title || 'Untitled Post'}</h2>
-                <Button color="gray" onClick={() => setShowPreview(false)}>
-                  Close Preview
+                <Button className='ml-auto' color="gray" onClick={() => setShowPreview(false)}>
+                  Close
                 </Button>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold">{title || 'Untitled Post'}</h2>
               </div>
               {featuredImage && (
                 <img
@@ -478,9 +493,9 @@ const recentBlogs = [
                 <Button color="gray" onClick={handlePreview}>
                   Preview
                 </Button>
-                <Button onClick={handleSave} disabled={loading}>
+                <Button onClick={handleSave} disabled={loading  || !title || !subTitle}>
                   {
-                    postId ? "Edit Post" : "Save Post"
+                    postId !== "0" ? "Edit Post" : "Save Post"
                   }
                 </Button>
               </div>

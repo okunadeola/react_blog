@@ -11,7 +11,7 @@ const PostcardLarge = ({ post }) => {
   };
   return (
     <div
-      className="group relative rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+      className="group relative rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer min-w-[500px]"
       onClick={() => viewDetail(post)}
     >
       <img
@@ -24,7 +24,7 @@ const PostcardLarge = ({ post }) => {
         <span className="inline-block px-3 py-1 bg-blue-500 text-white rounded-full text-sm mb-3">
           {post.category}
         </span>
-        <h4 className="text-xl font-semibold mb-2">{post.title}</h4>
+        <h4 className="text-xl font-semibold mb-2 line-clamp-2">{post.title}</h4>
         <p className="text-gray-600 mb-4 line-clamp-2">{post.subtitle}</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">

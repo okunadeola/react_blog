@@ -13,7 +13,7 @@ const PostcardMd = ({post}) => {
     }
   return (
     <div
-    className="group rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer max-w-[23vw]"
+    className="group rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer "
     onClick={() => viewDetail(post)}
   >
     <div className="relative">
@@ -28,7 +28,7 @@ const PostcardMd = ({post}) => {
       <span className="inline-block px-3 py-1 bg-blue-500 text-white rounded-full text-sm mb-2">
         {post.category}
       </span>
-      <h4 className="text-lg font-semibold mb-2">
+      <h4 className="text-lg font-semibold mb-2 line-clamp-2">
         {post.title}
       </h4>
       <div className="flex items-center justify-between">

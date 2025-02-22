@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { Trash2 } from 'lucide-react';
 import DeleteWarning from './DeleteWarning';
+import toast from 'react-hot-toast';
 
 export default function DashUsers() {
   const { currentUser } = useSelector((state) => state.user);
@@ -66,9 +67,11 @@ export default function DashUsers() {
             setShowModal(false);
         } else {
             console.log(data.message);
+            toast.success('post deleted Successfully')
         }
     } catch (error) {
         console.log(error.message);
+        toast.error(`user deletetion falied, ${error.message}`)
     }
   };
 
@@ -108,6 +111,8 @@ export default function DashUsers() {
                     )}
                   </Table.Cell>
                   <Table.Cell>
+                  {
+                    !user.isAdmin &&
                     <span
                       onClick={() => {
                         setShowModal(true);
@@ -117,6 +122,7 @@ export default function DashUsers() {
                     >
                      <Trash2 className="text-red-500"/>
                     </span>
+                  }
                   </Table.Cell>
                 </Table.Row>
               </Table.Body>

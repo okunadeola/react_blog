@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import Comment from './Comment';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import toast from 'react-hot-toast';
 
 export default function CommentSection({ postId }) {
   const { currentUser } = useSelector((state) => state.user);
@@ -108,9 +109,11 @@ export default function CommentSection({ postId }) {
       if (res.ok) {
         const data = await res.json();
         setComments(comments.filter((comment) => comment._id !== commentId));
+        toast.success(`comment deleted successfully`)
       }
     } catch (error) {
       console.log(error.message);
+      toast.error(`comment deletetion falied, ${error.message}`)
     }
   };
   return (

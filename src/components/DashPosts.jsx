@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { EditIcon, Trash2 } from 'lucide-react';
 import DeleteWarning from './DeleteWarning';
+import toast from 'react-hot-toast';
 
 
 export default function DashPosts() {
@@ -20,7 +21,6 @@ export default function DashPosts() {
         setLoading(true)
         const res = await fetch(`/api/post/getposts?userId=${currentUser._id}`);
         const data = await res.json();
-        console.log(data)
         if (res.ok) {
           setUserPosts(data.posts);
           if (data.posts.length < 9) {
@@ -68,6 +68,7 @@ export default function DashPosts() {
       const data = await res.json();
       if (!res.ok) {
         console.log(data.message);
+        toast.success('post deleted Successfully')
       } else {
         setUserPosts((prev) =>
           prev.filter((post) => post._id !== postIdToDelete)
@@ -75,6 +76,7 @@ export default function DashPosts() {
       }
     } catch (error) {
       console.log(error.message);
+      toast.error(`post deletetion falied, ${error.message}`)
     }
   };
   
@@ -132,7 +134,7 @@ export default function DashPosts() {
                   <Table.Cell>
                     <Link
                       className='text-teal-500 hover:underline'
-                      to={`/create-post/${post._id}`}
+                      to={`/dashboard?tab=create&action=${post._id}`}
                     >
                       <EditIcon className='text-purple-400'/>
                     </Link>

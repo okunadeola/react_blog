@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import DeleteWarning from './DeleteWarning';
 import { Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 
 export default function DashComments() {
@@ -70,11 +71,13 @@ export default function DashComments() {
           prev.filter((comment) => comment._id !== commentIdToDelete)
         );
         setShowModal(false);
+        toast.success(`comment deletetion successfully`)
       } else {
         console.log(data.message);
       }
     } catch (error) {
       console.log(error.message);
+      toast.error(`comment deletetion falied, ${error.message}`)
     }
   };
 
