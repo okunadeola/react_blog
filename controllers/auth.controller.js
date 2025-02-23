@@ -65,6 +65,8 @@ export const google = async (req, res, next) => {
         .status(200)
         .cookie('access_token', token, {
           httpOnly: true,
+          secure: true, // Required if using HTTPS
+          sameSite: "None", // Needed for cross-origin cookies
         })
         .json(rest);
     } else {
