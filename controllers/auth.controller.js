@@ -42,9 +42,6 @@ export const signin = async (req, res, next) => {
 
     res
       .status(200)
-      .cookie('access_token', token, {
-        httpOnly: true,
-      })
       .json(result);
   } catch (error) {
     next(error);
@@ -63,11 +60,6 @@ export const google = async (req, res, next) => {
       const { password, ...rest } = user._doc;
       res
         .status(200)
-        .cookie('access_token', token, {
-          httpOnly: true,
-          secure: true, // Required if using HTTPS
-          sameSite: "None", // Needed for cross-origin cookies
-        })
         .json(rest);
     } else {
       const generatedPassword =
@@ -90,9 +82,6 @@ export const google = async (req, res, next) => {
       const { password, ...rest } = newUser._doc;
       res
         .status(200)
-        .cookie('access_token', token, {
-          httpOnly: true,
-        })
         .json(rest);
     }
   } catch (error) {
