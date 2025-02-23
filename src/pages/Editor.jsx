@@ -19,6 +19,8 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import ListBlock from '../components/ListBlock';
+import { baseURL } from '../util';
+import { API } from '../API/setup';
 
 const BlogEditor = () => {
   const ejInstance = useRef();
@@ -48,11 +50,11 @@ const BlogEditor = () => {
       setPostId(actiomFromUrl)
 
       const fetchPost = async () => {
-        const res = await fetch(`/api/post/getposts?postId=${actiomFromUrl}`);
-        const data = await res.json();
+        const res = await API.get(`${baseURL}/post/getposts?postId=${actiomFromUrl}`);
+        const data = await res.data;
 
-        const res2 = await fetch('/api/featured/get');
-        const data2 = await res2.json();
+        const res2 = await API.get(`${baseURL}/featured/get`);
+        const data2 = await res2.data;
         
         const init = data.posts?.find(el => el._id === data2.postId)
 
@@ -197,10 +199,9 @@ const BlogEditor = () => {
   const uploadToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'grfua8vf'); // Replace with your Cloudinary upload preset
+    formData.append('upload_preset', '...'); // Replace with your Cloudinary upload preset
 
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/dv1cetenk/image/upload`, // Replace with your Cloudinary cloud name
+    const response = await fetch(`https://api.cloudinary.com/v1_1/.../image/upload`, // Replace with your Cloudinary cloud name
       {
         method: 'POST',
         body: formData
@@ -265,21 +266,16 @@ const BlogEditor = () => {
     setLoading(true)
     try {
       const isCreate = postId === "0"
-      const res = await fetch( isCreate ? '/api/post/create' : `/api/post/updatepost/${postId}/${currentUser._id}`, {
-        method: isCreate ? 'POST' : 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      if (!res.ok) {
+
+      const res = isCreate ? await API.post(`${baseURL}/post/create`, formData) :  await API.put(
+       `${baseURL}/post/updatepost/${postId}/${currentUser._id}`, formData);
+      const data = await res.data;
+      if (!data) {
         toast.error(data.message);
         setLoading(false)
         return;
       }
-
-      if (res.ok) {
+      else {
         setLoading(false)
         navigate(`/post/${data.slug}`);
       }

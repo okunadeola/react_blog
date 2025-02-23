@@ -22,6 +22,7 @@
     "@editorjs/quote": "^2.7.6",
     "@editorjs/table": "^2.4.3",
     "@reduxjs/toolkit": "^2.5.0",
+    "axios": "^1.7.9",
     "firebase": "^11.1.0",
     "flowbite": "^2.5.2",
     "flowbite-react": "^0.10.2",

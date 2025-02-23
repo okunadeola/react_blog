@@ -6,6 +6,8 @@ import { FaCheck, FaTimes } from 'react-icons/fa';
 import { Trash2 } from 'lucide-react';
 import DeleteWarning from './DeleteWarning';
 import toast from 'react-hot-toast';
+import { baseURL } from '../util';
+import { API } from '../API/setup';
 
 export default function DashUsers() {
   const { currentUser } = useSelector((state) => state.user);
@@ -19,9 +21,9 @@ export default function DashUsers() {
     const fetchUsers = async () => {
       try {
         setLoading(true)
-        const res = await fetch(`/api/user/getusers`);
-        const data = await res.json();
-        if (res.ok) {
+        const res = await API.get(`${baseURL}/user/getusers`);
+        const data = await res.data;
+        if (data) {
           setUsers(data.users);
           if (data.users.length < 9) {
             setShowMore(false);
@@ -41,9 +43,9 @@ export default function DashUsers() {
   const handleShowMore = async () => {
     const startIndex = users.length;
     try {
-      const res = await fetch(`/api/user/getusers?startIndex=${startIndex}`);
-      const data = await res.json();
-      if (res.ok) {
+      const res = await API.get(`${baseURL}/user/getusers?startIndex=${startIndex}`);
+      const data = await res.data;
+      if (data) {
         setUsers((prev) => [...prev, ...data.users]);
         if (data.users.length < 9) {
           setShowMore(false);
@@ -58,11 +60,9 @@ export default function DashUsers() {
     try {
 
       // TODO: add loading state to the modal, prevent multiclick  
-        const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
-            method: 'DELETE',
-        });
-        const data = await res.json();
-        if (res.ok) {
+        const res = await API.delete(`${baseURL}/user/delete/${userIdToDelete}`);
+        const data = await res.data;
+        if (data) {
             setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete));
             setShowModal(false);
         } else {

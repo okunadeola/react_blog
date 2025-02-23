@@ -5,6 +5,8 @@ import { FaThumbsUp } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Button, Textarea } from 'flowbite-react';
 import toast from 'react-hot-toast';
+import { baseURL } from '../util';
+import { API } from '../API/setup';
 
 
 export default function Comment({ comment, onLike, onEdit, onDelete }) {
@@ -15,9 +17,9 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await fetch(`/api/user/${comment.userId}`);
-        const data = await res.json();
-        if (res.ok) {
+        const res = await API.get(`${baseURL}/user/${comment.userId}`);
+        const data = await res.data;
+        if (res.data) {
           setUser(data);
         }
       } catch (error) {
@@ -34,16 +36,8 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
 
   const handleSave = async () => {
     try {
-      const res = await fetch(`/api/comment/editComment/${comment._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content: editedContent,
-        }),
-      });
-      if (res.ok) {
+      const res = await API.put(`${baseURL}/comment/editComment/${comment._id}`, editedContent);
+      if (res.data) {
         setIsEditing(false);
         onEdit(comment, editedContent);
         toast.success(`comment update success`)

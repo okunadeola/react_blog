@@ -8,6 +8,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import Comment from './Comment';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import toast from 'react-hot-toast';
+import { baseURL } from '../util';
+import { API } from '../API/setup';
 
 export default function CommentSection({ postId }) {
   const { currentUser } = useSelector((state) => state.user);
@@ -23,19 +25,13 @@ export default function CommentSection({ postId }) {
       return;
     }
     try {
-      const res = await fetch('/api/comment/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content: comment,
-          postId,
-          userId: currentUser._id,
-        }),
+      const res = await API.post(`${baseURL}/comment/create`, {
+        content: comment,
+        postId,
+        userId: currentUser._id,
       });
-      const data = await res.json();
-      if (res.ok) {
+      const data = await res.data;
+      if (data) {
         setComment('');
         setCommentError(null);
         setComments([data, ...comments]);
@@ -48,7 +44,7 @@ export default function CommentSection({ postId }) {
   useEffect(() => {
     const getComments = async () => {
       try {
-        const res = await fetch(`/api/comment/getPostComments/${postId}`);
+        const res = await fetch(`${baseURL}/comment/getPostComments/${postId}`);
         if (res.ok) {
           const data = await res.json();
           setComments(data);
@@ -66,11 +62,9 @@ export default function CommentSection({ postId }) {
         navigate('/sign-in');
         return;
       }
-      const res = await fetch(`/api/comment/likeComment/${commentId}`, {
-        method: 'PUT',
-      });
-      if (res.ok) {
-        const data = await res.json();
+      const res = await API.put(`${baseURL}/comment/likeComment/${commentId}`);
+      if (res.data) {
+        const data = await res.data;
         setComments(
           comments.map((comment) =>
             comment._id === commentId
@@ -103,11 +97,9 @@ export default function CommentSection({ postId }) {
         navigate('/sign-in');
         return;
       }
-      const res = await fetch(`/api/comment/deleteComment/${commentId}`, {
-        method: 'DELETE',
-      });
-      if (res.ok) {
-        const data = await res.json();
+      const res = await API.delete(`${baseURL}/comment/deleteComment/${commentId}`);
+      if (res.data) {
+        const data = await res.data;
         setComments(comments.filter((comment) => comment._id !== commentId));
         toast.success(`comment deleted successfully`)
       }

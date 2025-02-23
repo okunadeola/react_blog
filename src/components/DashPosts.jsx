@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { EditIcon, Trash2 } from 'lucide-react';
 import DeleteWarning from './DeleteWarning';
 import toast from 'react-hot-toast';
+import { baseURL } from '../util';
+import { API } from '../API/setup';
 
 
 export default function DashPosts() {
@@ -19,9 +21,9 @@ export default function DashPosts() {
     const fetchPosts = async () => {
       try {
         setLoading(true)
-        const res = await fetch(`/api/post/getposts?userId=${currentUser._id}`);
-        const data = await res.json();
-        if (res.ok) {
+        const res = await API.get(`${baseURL}/post/getposts?userId=${currentUser._id}`);
+        const data = await res.data;
+        if (data) {
           setUserPosts(data.posts);
           if (data.posts.length < 9) {
             setShowMore(false);
@@ -41,11 +43,10 @@ export default function DashPosts() {
   const handleShowMore = async () => {
     const startIndex = userPosts.length;
     try {
-      const res = await fetch(
-        `/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`
+      const res = await API.get(`${baseURL}/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`
       );
-      const data = await res.json();
-      if (res.ok) {
+      const data = await res.data;
+      if (res.data) {
         setUserPosts((prev) => [...prev, ...data.posts]);
         if (data.posts.length < 9) {
           setShowMore(false);
@@ -59,11 +60,7 @@ export default function DashPosts() {
   const handleDeletePost = async () => {
     setShowModal(false);
     try {
-      const res = await fetch(
-        `/api/post/deletepost/${postIdToDelete}/${currentUser._id}`,
-        {
-          method: 'DELETE',
-        }
+      const res = await API.delete(`${baseURL}/post/deletepost/${postIdToDelete}/${currentUser._id}`,
       );
       const data = await res.json();
       if (!res.ok) {

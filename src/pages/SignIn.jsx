@@ -7,6 +7,8 @@ import {
   signInSuccess,
   signInFailure,
 } from "../redux/user/userSlice";
+import { baseURL } from "../util";
+import { API } from "../API/setup";
 
 
 export default function SignIn() {
@@ -17,6 +19,9 @@ export default function SignIn() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
@@ -24,18 +29,14 @@ export default function SignIn() {
     }
     try {
       dispatch(signInStart());
-      const res = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
+      const response = await API.post(`${baseURL}/auth/signin`, formData)
+      const data = response.data
+
       if (data.success === false) {
         dispatch(signInFailure(data.message));
-      }
-
-      if (res.ok) {
+      }else{
         dispatch(signInSuccess(data));
+        localStorage.setItem('blog_auth_token_react', data.access_token)
         navigate("/");
       }
     } catch (error) {

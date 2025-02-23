@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import BlogHomepage2 from './blog page/home';
 import toast from 'react-hot-toast';
+import { baseURL } from '../util';
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -9,11 +10,11 @@ export default function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-          const res = await fetch('/api/post/getPosts');
+          const res = await fetch(`${baseURL}/post/getPosts`);
           const data = await res.json();
           setPosts(data.posts);
     
-          const res2 = await fetch('/api/featured/get');
+          const res2 = await fetch(`${baseURL}/featured/get`);
           const data2 = await res2.json();
           
           const init = data.posts?.find(el => el._id === data2.postId)

@@ -9,6 +9,7 @@ import CommentSection from "../components/CommentSection";
 import { ChevronLeft } from "lucide-react";
 import moment from "moment";
 import ListBlock from "../components/ListBlock";
+import { baseURL } from "../util";
 
 export default function PostDetail() {
   const { postSlug } = useParams();
@@ -21,7 +22,7 @@ export default function PostDetail() {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/post/getposts?slug=${postSlug}`);
+        const res = await fetch(`${baseURL}/post/getposts?slug=${postSlug}`);
         const data = await res.json();
         if (!res.ok) {
           setError(true);
@@ -44,7 +45,7 @@ export default function PostDetail() {
   useEffect(() => {
     try {
       const fetchRecentPosts = async () => {
-        const res = await fetch(`/api/post/getposts?limit=3`);
+        const res = await fetch(`${baseURL}/post/getposts?limit=3`);
         const data = await res.json();
         if (res.ok) {
           setRecentPosts(data.posts);
@@ -109,7 +110,7 @@ export default function PostDetail() {
 
         case "image":
           return (
-            <figure className="my-8">
+            <figure className="my-8" key={index}>
               <img
                 src={block.data.file.url}
                 alt={block.data.caption || ""}
@@ -127,7 +128,7 @@ export default function PostDetail() {
           const ListTag = block.data.style === "ordered" ? "ol" : "ul";
           return (
 
-            <ListBlock block={block}/>
+            <ListBlock block={block} key={index}/>
             // <ListTag key={index} className={`${ListTag === "ol" ? 'list-decimal' : 'list-disc'} ml-6 mb-4`}>
             //   {block.data.items.map((item, i) => (
             //     <li key={i}>
@@ -193,13 +194,14 @@ export default function PostDetail() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline"
+              key={index}
             >
               {block.data.text}
             </a>
           );
 
         case "relatedPost":
-          return <RelatedPostBlock data={block.data} />;
+          return <RelatedPostBlock data={block.data} key={index} />;
 
         default:
           console.log("Unhandled block type:", block.type);

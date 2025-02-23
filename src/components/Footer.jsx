@@ -9,8 +9,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 export default function FooterCom() {
   const location = useLocation();
-
-  console.log(location.pathname.includes("/dashboard"));
+  
   return (
     <div className="w-full">
       {!location.pathname.includes("/dashboard") && (

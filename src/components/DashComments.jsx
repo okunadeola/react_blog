@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import DeleteWarning from './DeleteWarning';
 import { Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { baseURL } from '../util';
+import { API } from '../API/setup';
 
 
 export default function DashComments() {
@@ -19,9 +21,9 @@ export default function DashComments() {
     const fetchComments = async () => {
       try {
         setLoading(true)
-        const res = await fetch(`/api/comment/getcomments`);
-        const data = await res.json();
-        if (res.ok) {
+        const res = await API.get(`${baseURL}/comment/getcomments`);
+        const data = await res.data;
+        if (data) {
           setComments(data.comments);
           if (data.comments.length < 9) {
             setShowMore(false);
@@ -41,11 +43,10 @@ export default function DashComments() {
   const handleShowMore = async () => {
     const startIndex = comments.length;
     try {
-      const res = await fetch(
-        `/api/comment/getcomments?startIndex=${startIndex}`
+      const res = await API.get(`${baseURL}/comment/getcomments?startIndex=${startIndex}`
       );
-      const data = await res.json();
-      if (res.ok) {
+      const data = await res.data;
+      if (data) {
         setComments((prev) => [...prev, ...data.comments]);
         if (data.comments.length < 9) {
           setShowMore(false);
@@ -59,14 +60,9 @@ export default function DashComments() {
   const handleDeleteComment = async () => {
     setShowModal(false);
     try {
-      const res = await fetch(
-        `/api/comment/deleteComment/${commentIdToDelete}`,
-        {
-          method: 'DELETE',
-        }
-      );
-      const data = await res.json();
-      if (res.ok) {
+      const res = await API.delete(`${baseURL}/comment/deleteComment/${commentIdToDelete}`);
+      const data = await res.data;
+      if (res.data) {
         setComments((prev) =>
           prev.filter((comment) => comment._id !== commentIdToDelete)
         );

@@ -8,6 +8,9 @@ import DashUsers from '../components/DashUsers';
 import DashComments from '../components/DashComments';
 import DashboardComp from '../components/DashboardComp';
 import BlogEditor from './Editor';
+import { useDispatch } from "react-redux";
+import { baseURL } from '../util';
+import { signoutSuccess } from '../redux/user/userSlice';
 
 const sidebarVariants = {
   hidden: { x: '-100%' },
@@ -20,6 +23,7 @@ const Dashboard = () => {
   const [tab, setTab] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
 
 
@@ -54,6 +58,13 @@ const Dashboard = () => {
 
 
 
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
+  }, [location]);
+
+
 
 
 
@@ -61,9 +72,22 @@ const Dashboard = () => {
     setSidebarOpen((prev) => !prev);
   };
 
-  const signOut = () => {
-    // Add your sign-out logic here.
-    console.log('Sign out clicked');
+  const signOut = async () => {
+    try {
+      const res = await fetch(`${baseURL}/user/signout`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signoutSuccess());
+        navigate("/sign-in");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+    
   };
 
   const toCreatePost = () => {
