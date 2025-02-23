@@ -1,5 +1,14 @@
 # React + Vite
 
+# Screenshot Available
+
+![img](./screenshots/s1.png)
+![img](./screenshots/s2.png)
+![img](./screenshots/s3.png)
+![img](./screenshots/s4.png)
+![img](./screenshots/s5.png)
+![img](./screenshots/s6.png)
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
